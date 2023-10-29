@@ -14,11 +14,15 @@ class CardSelectionVC: UIViewController {
     let stopButton = CWButton(backgroudColor: .systemBlue, title: "Stop!");
     let restartButton = CWButton(backgroudColor: .systemGreen, title: "Restart");
     let rulesButton = CWButton(backgroudColor: .systemGray, title: "Rules");
+    
+    var cards = Card.allValues;
+    var timer: Timer!;
 
     override func viewDidLoad() {
         super.viewDidLoad();
         view.backgroundColor = .systemBackground;
         configureUI();
+        startTimer();
     }
     
     func configureUI() {
@@ -26,6 +30,14 @@ class CardSelectionVC: UIViewController {
         configureStopButton();
         configureRestartButton();
         configureRulesButton();
+    }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(changeImage), userInfo: nil, repeats: true)
+    }
+    
+    @objc func changeImage() {
+        cardImageView.image = Card.allValues.randomElement();
     }
     
     func configureCardImageView() {
@@ -46,6 +58,8 @@ class CardSelectionVC: UIViewController {
     func configureStopButton() {
         view.addSubview(stopButton);
         
+        stopButton.addTarget(self, action: #selector(stopTimer), for: .touchUpInside)
+        
         NSLayoutConstraint.activate([
             stopButton.widthAnchor.constraint(equalToConstant: 250),
             stopButton.heightAnchor.constraint(equalToConstant: 50),
@@ -54,8 +68,14 @@ class CardSelectionVC: UIViewController {
         ])
     }
     
+    @objc func stopTimer() {
+        timer.invalidate();
+    }
+    
     func configureRestartButton() {
         view.addSubview(restartButton);
+        
+        restartButton.addTarget(self, action: #selector(restartTimer), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
             restartButton.widthAnchor.constraint(equalToConstant: 115),
@@ -63,6 +83,11 @@ class CardSelectionVC: UIViewController {
             restartButton.leadingAnchor.constraint(equalTo: stopButton.leadingAnchor),
             restartButton.topAnchor.constraint(equalTo: stopButton.bottomAnchor, constant: 20),
         ])
+    }
+    
+    @objc func restartTimer() {
+        timer.invalidate()
+        startTimer();
     }
     
     @objc func presentRulesVC() {

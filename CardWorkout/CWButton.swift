@@ -22,6 +22,7 @@ class CWButton: UIButton {
         super.init(frame: .zero);
         self.backgroundColor = backgroudColor;
         setTitle(title, for: .normal);
+        configure();
     }
 
     func configure() {
